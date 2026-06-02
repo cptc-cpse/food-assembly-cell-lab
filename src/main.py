@@ -6,13 +6,14 @@ import csv
 import json
 from pathlib import Path
 
-from tray import Tray
-from ingredient_station import IngredientStation
-from vision_system import VisionSystem
-from robot_arm import RobotArm
-from assembly_controller import AssemblyController
+# from tray import Tray
+# from ingredient_station import IngredientStation
+# from vision_system import VisionSystem
+# from robot_arm import RobotArm
+# from assembly_controller import AssemblyController
 
-
+ROOT = Path(__file__).resolve()
+DATA = ROOT / "data"
 def load_csv(filename):
     """
     Load a CSV file and return list of dicts (one dict per row).
@@ -23,10 +24,8 @@ def load_csv(filename):
     Returns:
         List of dicts, where each dict is one row
     """
-    # TODO: Open and read the CSV file
-    # TODO: Use csv.DictReader to get dicts
-    # TODO: Return as a list
-    pass
+    with open(filename, mode="r", encoding="utf-8") as file:
+        return list(csv.DictReader(file))
 
 
 def save_json(filename, data):
@@ -186,9 +185,11 @@ def main():
     
     # Load CSV data
     print("Loading tray and ingredient data...")
-    # TODO: Load data/trays.csv and data/ingredients.csv
-    # TODO: tray_rows = load_csv(str(data_dir / "trays.csv"))
-    # TODO: ingredient_rows = load_csv(str(data_dir / "ingredients.csv"))
+    # Load data/trays.csv and data/ingredients.csv
+    tray_rows = load_csv(str(data_dir / "trays.csv"))
+    print(tray_rows)
+    ingredient_rows = load_csv(str(data_dir / "ingredients.csv"))
+    print(ingredient_rows)
     
     # Create objects
     print("Creating objects from CSV data...")
