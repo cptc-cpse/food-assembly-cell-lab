@@ -71,6 +71,6 @@ class VisionSystem:
         return_val = {
             "detection_count": self.detection_count,
             "measurements_count": self.measurements_count,  
-            "average_measurement_error": self.measurement_error
+            "average_measurement_error": self.measurement_error / self.measurements_count if self.measurements_count > 0 else 0
         }
         return return_val
