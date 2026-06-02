@@ -5,14 +5,6 @@
 
 class Tray:
     """
-    trays.csv:
-    tray_id,meal_type,compartment_a,compartment_b,compartment_c,target_a_g,target_b_g,target_c_g
-    T001,protein_bowl,rice,chicken,vegetables,120,90,60
-    T002,protein_bowl,rice,chicken,vegetables,120,90,60
-    T003,veggie_bowl,rice,tofu,vegetables,110,80,75
-    T004,curry_meal,rice,curry,vegetables,130,100,50
-    T005,curry_meal,rice,curry,vegetables,130,100,50
-
     Behavior:
     - When built from CSV, `recipe` is the three compartment ingredient names.
     - `compartments` starts with zero grams for each ingredient in the recipe.
