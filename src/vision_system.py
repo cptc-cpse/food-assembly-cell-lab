@@ -44,14 +44,14 @@ class VisionSystem:
 
     # - `vision.measure(tray, compartment)` — Read the tray weight and add a realistic measurement error.
     # - `measure()` should verify the compartment exists on the tray.
-    def measure(self, tray: Tray, compartment) :
+    def measure(self, tray: Tray, compartment: dict) :
         pass
 
     # - `vision.to_json()` — Return a dictionary with detection_count, measurements_count, and average measurement error.
     def to_json(self) :
         return_val = {
-        "detection_count": self.detection_count,
-        "measurements_count": self.measurements_count,  
-        "average_measurement_error": self.measurement_error
+            "detection_count": self.detection_count,
+            "measurements_count": self.measurements_count,  
+            "average_measurement_error": self.measurement_error
         }
         return return_val
