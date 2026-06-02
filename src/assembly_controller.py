@@ -8,15 +8,14 @@ class AssemblyController:
         self.reject_count = 0
 
 
-    def decide (self, tray, ingredient_name):
-        self.__reduce__
-
-        if ingredient_name in tray.recipe:
+    def decide(self, tray, ingredient_name):
+        if ingredient_name not in tray.recipe:
             return SKIP
         
         current_g = tray.compartments.get(ingredient_name, 0)
         target_g = tray.recipe.get(ingredient_name, 0)
         if current_g >= target_g - self.tolerance_g:
+            print("skipped due to sufficient ingredient already present")
             return SKIP
 
         return PLACE

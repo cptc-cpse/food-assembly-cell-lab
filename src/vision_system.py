@@ -35,9 +35,9 @@ class VisionSystem:
     # - `detect()` should increment a detection counter every time it runs.
     def detect(self, tray: Tray) -> bool:
         self.detection_count = self.detection_count + 1
-        success_rate = random.random(0, 100)  # generates a random number between 0 and 100
+        success_rate = random.randint(0, 100)  # generates a random number between 0 and 100
 
-        if success_rate >= 95: # simulate 95% success rate
+        if success_rate <= 95: # simulate 95% success rate
             return True
         else :
             return False

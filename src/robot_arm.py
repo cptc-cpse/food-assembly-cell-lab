@@ -31,7 +31,7 @@ class RobotArm:
             "compartment": compartment,
             "target_g": target_g,
             "success": success,
-            # TODO: variabnce
+            # TODO: variance
         }
     
     def to_json(self):

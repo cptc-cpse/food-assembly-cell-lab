@@ -6,6 +6,7 @@ import csv
 import json
 from pathlib import Path
 
+from ingredient_station import IngredientStation
 from tray import Tray
 # from ingredient_station import IngredientStation
 from vision_system import VisionSystem
@@ -69,12 +70,12 @@ def create_ingredient_stations(ingredient_rows):
     Returns:
         Dict mapping ingredient name → IngredientStation object
     """
-    # return_dict = {}
-    # for ingredient_row in ingredient_rows:
-    #     station = IngredientStation.from_csv(ingredient_row)
-    #     ingredient_name = ingredient_row["ingredient_name"]
-    #     return_dict[ingredient_name] = station
-    # return return_dict
+    return_dict = {}
+    for ingredient_row in ingredient_rows:
+        station = IngredientStation.from_csv(ingredient_row)
+        ingredient_name = ingredient_row["name"]
+        return_dict[ingredient_name] = station
+    return return_dict
 
 
 def run_simulation(trays, stations, vision, robot, controller):
@@ -101,25 +102,50 @@ def run_simulation(trays, stations, vision, robot, controller):
     """
     events = []
     
-    # TODO: Loop through each tray
-    #   TODO: Try to detect tray with vision.detect(tray)
-    #   TODO: If not detected:
-    #       - Record "missed_tray" event
-    #       - Skip to next tray
-    #   TODO: If detected:
-    #       - Loop through tray.recipe
-    #           - Get ingredient name
-    #           - Get target grams from tray.targets[ingredient]
-    #           - Get station from stations[ingredient]
-    #           - Call controller.decide(tray, ingredient, ingredient)
-    #           - If decision == "place":
-    #               - Call robot.place(tray, ingredient, station, target)
-    #               - Call vision.measure(tray, ingredient)
-    #               - Record "portion_placed" event with placement and measurement info
-    #           - Else (skip):
-    #               - Record "portion_skipped" event
-    #       - After all ingredients, call controller.check_quality(tray)
-    #       - Record "tray_done" event with quality check result
+    for tray in trays:
+        tray_report = {
+            "tray_id": tray.tray_id,
+            "meal_type": tray.meal_type,
+            "steps": []
+        }
+        tray_detected = vision.detect(tray)
+        print(tray_report)
+        if not tray_detected:
+            print("skipped due to no tray")
+            tray_report["status"] = "skipped"
+            continue
+            
+        for compartment in tray.recipe:
+            decision = controller.decide(tray, compartment)
+            if decision != "place":
+                tray_report["steps"].append({
+                    "compartment": compartment,
+                    "decision": "skipped"
+                })
+                print("skipped due to controller decision")
+                continue
+            
+            station = stations.get(compartment)
+            if station is None:
+                tray_report["steps"].append({
+                    "compartment": compartment,
+                    "decision": "skipped",
+                })
+                print("skipped due to missing station")
+                continue
+
+            placement = robot.place(tray, compartment, station, trays.targets[compartment])
+            tray_report["steps"].append({
+                "compartment": compartment,
+                "decision": "placed",
+                "placement": placement,
+            })
+            measurement = vision.measure(tray, compartment)
+            tray_report["steps"].append({
+                "compartment": compartment,
+                "measurement": measurement,
+            })
+        print(tray_report)
     
     return events
 
@@ -194,16 +220,15 @@ def main():
     # Create objects
     print("Creating objects from CSV data...")
     trays = create_trays(tray_rows)
-    print(trays)
-    # TODO: stations = create_ingredient_stations(ingredient_rows)
+    stations = create_ingredient_stations(ingredient_rows)
     vision = VisionSystem()
     robot = RobotArm()
     controller = AssemblyController(tolerance_g=20)
     
     # Run simulation
     print("Running simulation...")
-    # events = run_simulation(trays, stations, vision, robot, controller)
-    
+    events = run_simulation(trays, stations, vision, robot, controller)
+    print(events)
     # Build report
     print("Building report...")
     # TODO: report = build_report(trays, stations, vision, robot, controller, events)

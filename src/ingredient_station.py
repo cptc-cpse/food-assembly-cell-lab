@@ -12,16 +12,13 @@ class IngredientStation:
     curry
     tofu
 
-    Behavior:
-    - When built from CSV, `ingredient` is the ingredient name.
-    - `dispense()` should return a fixed amount of grams for the ingredient.
     """
     @classmethod
     def from_csv(cls, row: dict) -> IngredientStation: 
         """
         Parse one CSV row and build an ingredient station with an ingredient name.
         """
-        return cls(row["ingredient_name"], row["starting_inventory_g"], row["portion_variability_g"])
+        return cls(row["name"], row["starting_inventory_g"], row["portion_variability_g"])
     
     def __init__(self, name, inventory_g, variability_g):
         """
@@ -33,6 +30,9 @@ class IngredientStation:
         self.dispense_count = 0
 
     def dispense(self, target_g) -> int:
+        """
+        Simulate dispensing an ingredient with some variability and inventory limits.
+        """
         variance = random.randint(-self.variability_g, self.variability_g)
         actual_g = max(0, target_g + variance)
         actual_g = min(actual_g, self.inventory_g)
