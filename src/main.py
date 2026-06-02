@@ -6,11 +6,11 @@ import csv
 import json
 from pathlib import Path
 
-# from tray import Tray
+from tray import Tray
 # from ingredient_station import IngredientStation
-# from vision_system import VisionSystem
-# from robot_arm import RobotArm
-# from assembly_controller import AssemblyController
+from vision_system import VisionSystem
+from robot_arm import RobotArm
+from assembly_controller import AssemblyController
 
 ROOT = Path(__file__).resolve()
 DATA = ROOT / "data"
@@ -52,10 +52,11 @@ def create_trays(tray_rows):
     Returns:
         List of Tray objects
     """
-    # TODO: Loop through tray_rows
-    # TODO: Call Tray.from_csv(row) for each
-    # TODO: Return list of Tray objects
-    pass
+    return_list = []
+    for tray_row in tray_rows:
+        tray = Tray.from_csv(tray_row)
+        return_list.append(tray)
+    return return_list
 
 
 def create_ingredient_stations(ingredient_rows):
@@ -68,11 +69,12 @@ def create_ingredient_stations(ingredient_rows):
     Returns:
         Dict mapping ingredient name → IngredientStation object
     """
-    # TODO: Loop through ingredient_rows
-    # TODO: Call IngredientStation.from_csv(row) for each
-    # TODO: Store in a dict with name as key
-    # TODO: Return dict
-    pass
+    # return_dict = {}
+    # for ingredient_row in ingredient_rows:
+    #     station = IngredientStation.from_csv(ingredient_row)
+    #     ingredient_name = ingredient_row["ingredient_name"]
+    #     return_dict[ingredient_name] = station
+    # return return_dict
 
 
 def run_simulation(trays, stations, vision, robot, controller):
@@ -187,21 +189,20 @@ def main():
     print("Loading tray and ingredient data...")
     # Load data/trays.csv and data/ingredients.csv
     tray_rows = load_csv(str(data_dir / "trays.csv"))
-    print(tray_rows)
     ingredient_rows = load_csv(str(data_dir / "ingredients.csv"))
-    print(ingredient_rows)
-    
+
     # Create objects
     print("Creating objects from CSV data...")
-    # TODO: trays = create_trays(tray_rows)
+    trays = create_trays(tray_rows)
+    print(trays)
     # TODO: stations = create_ingredient_stations(ingredient_rows)
-    # TODO: vision = VisionSystem()
-    # TODO: robot = RobotArm()
-    # TODO: controller = AssemblyController(tolerance_g=20)
+    vision = VisionSystem()
+    robot = RobotArm()
+    controller = AssemblyController(tolerance_g=20)
     
     # Run simulation
     print("Running simulation...")
-    # TODO: events = run_simulation(trays, stations, vision, robot, controller)
+    # events = run_simulation(trays, stations, vision, robot, controller)
     
     # Build report
     print("Building report...")
