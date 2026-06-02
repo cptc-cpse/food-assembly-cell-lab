@@ -43,9 +43,28 @@ class VisionSystem:
             return False
 
     # - `vision.measure(tray, compartment)` — Read the tray weight and add a realistic measurement error.
-    # - `measure()` should verify the compartment exists on the tray.
-    def measure(self, tray: Tray, compartment: dict) :
-        pass
+#     - `measure()` should verify the compartment exists on the tray.
+#     - Measurement error should be small (for example, ±5g) and should be recorded.
+#     - The returned measurement data should include actual weight, measured weight, and measurement error.
+    def measure(self, tray: Tray, compartment: str) :
+        if compartment not in tray.compartments:
+            self.measurement_error = self.measurement_error + 1
+            print(f"Missing Compartment: {compartment}")
+        else :
+            measurement_error = random.randint(-10, 10)  # Simulate measurement error within ±5g
+            actual_weight = tray.compartments[compartment]
+            measured_weight = actual_weight + measurement_error
+
+            if measured_weight < actual_weight - 5 or measured_weight > actual_weight + 5 :  # Ensure measured weight is not negative
+                self.measurement_error += 1
+
+            self.measurements_count = self.measurements_count + 1
+
+        return {
+            "actual_weight": actual_weight,
+            "measured_weight": measured_weight,
+            "measurement_error": measurement_error
+        }
 
     # - `vision.to_json()` — Return a dictionary with detection_count, measurements_count, and average measurement error.
     def to_json(self) :
