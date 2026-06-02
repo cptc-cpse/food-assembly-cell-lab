@@ -50,6 +50,9 @@ class Tray:
         self.status = "empty"
 
     def __str__(self):
+        """
+        When a tray object is printed, this string is what is returned.
+        """
         return f"Tray Id = {self.tray_id} Meal Type = {self.meal_type} Recipe = {self.recipe}"
 
     def add_food(self, compartment: str, grams: int) -> int:
