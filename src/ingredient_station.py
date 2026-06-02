@@ -1,7 +1,7 @@
 # Group 2: IngredientStation Class
 # TODO: Implement the IngredientStation class here
 # See README.md for the class contract and required methods
-
+import random
 class IngredientStation:
     """
     ingredient_stations.csv:
@@ -21,18 +21,35 @@ class IngredientStation:
         """
         Parse one CSV row and build an ingredient station with an ingredient name.
         """
-        return cls(row["station_id"], row["ingredient_name"])
+        return cls(row["ingredient_name"], row["starting_inventory_g"], row["portion_variability_g"])
     
-    def __init__(self, station_id: str, ingredient: str):
+    def __init__(self, name, inventory_g, variability_g):
         """
         Store station metadata and set a fixed dispense amount.
         """
-        self.station_id = station_id
-        self.ingredient = ingredient
-        self.dispense_amount = 10  # Fixed amount in grams for simplicity
+        self.name = name
+        self.inventory_g = int(inventory_g)
+        self.variability_g = int(variability_g)
+        self.dispense_count = 0
 
-    def dispense(self) -> int:
-        """""
-        Return the fixed amount of grams for the ingredient.
-        """""
-        return self.dispense_amount
+    def dispense(self, target_g) -> int:
+        variance = random.randint(-self.variability_g, self.variability_g)
+        actual_g = max(0, target_g + variance)
+        actual_g = min(actual_g, self.inventory_g)
+
+        self.inventory_g -= actual_g
+        self.dispense_count += 1
+        return {
+            "target_g": target_g,
+            "actual_g": actual_g,
+            "variance": variance,
+            "inventory_remaining_g": self.inventory_g
+        }
+    
+    def to_json(self):
+        return {
+            "name": self.name,
+            "inventory_g": self.inventory_g,
+            "dispense_count": self.dispense_count,
+            "inventory_remaining_g": self.inventory_g
+        }
