@@ -49,6 +49,9 @@ class Tray:
         self.compartments = {compartment: 0 for compartment in recipe}
         self.status = "empty"
 
+    def __str__(self):
+        return f"Tray Id = {self.tray_id} Meal Type = {self.meal_type} Recipe = {self.recipe}"
+
     def add_food(self, compartment: str, grams: int) -> int:
         """""
         Add grams to a named compartment, update the state, and return 
